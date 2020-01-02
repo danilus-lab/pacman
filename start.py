@@ -26,6 +26,7 @@ def terminate():
 
 def nast():
     screen.fill((0, 0, 0))
+    print(1)
 
 
 def start_screen():
@@ -75,6 +76,7 @@ def start_screen():
                         return
                     elif arrow.rect.y == 130:
                         nast()
+                        running = False
                     elif arrow.rect.y == 230:
                         terminate()
                     print(arrow.rect.y)
