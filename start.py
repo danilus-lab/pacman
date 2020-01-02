@@ -7,6 +7,7 @@ screen = pygame.display.set_mode(size)
 screen.fill(pygame.Color("black"))
 
 
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     image = pygame.image.load(fullname)
@@ -17,6 +18,11 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+def convert(image, x, y):
+    image1 = pygame.transform.scale(image, (x, y))
+    return image1
 
 
 def terminate():
@@ -86,9 +92,17 @@ def start_screen():
 
 
 start_screen()
-print(1)
 running = True
 screen.fill((0, 0, 0))
+all_sprites = pygame.sprite.Group()
+pac = pygame.sprite.Sprite(all_sprites)
+pac.image = convert(load_image('pacman.png', -1), 20, 20)
+pac.rect = pac.image.get_rect()
+pac.rect.x = 200
+pac.rect.y = 300
+all_sprites.update()
+all_sprites.draw(screen)
+print(1)
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
