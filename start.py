@@ -20,7 +20,7 @@ def load_image(name, colorkey=None):
     return image
 
 
-def convert(image, x, y):
+def convert_image(image, x, y):
     image1 = pygame.transform.scale(image, (x, y))
     return image1
 
@@ -70,6 +70,7 @@ def start_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
                     if arrow.rect.y < 150:
@@ -91,20 +92,56 @@ def start_screen():
         pygame.display.flip()
 
 
+class Pacman:
+    def __init__(self, x, y):
+        self.all_sprites = pygame.sprite.Group()
+        self.pac = pygame.sprite.Sprite(self.all_sprites)
+        self.pac.image = convert_image(load_image('pacman.png', -1), 20, 20)
+        self.pac.rect = self.pac.image.get_rect()
+        self.pac.rect.x = x
+        self.pac.rect.y = y
+        self.pac.rect.x += 2
+        self.moveUp = self.moveLeft = self.moveDown = self.moveRight = False
+        self.direction = 0
+        self.speed = 5
+
+    def move(self, event):
+        if event.key == pygame.K_UP:
+            self.pac.rect.y -= 2
+            self.direction = 0
+        elif event.key == pygame.K_DOWN:
+            self.pac.rect.y += 2
+            self.direction = 1
+        elif event.key == pygame.K_RIGHT:
+            self.pac.rect.x += 2
+            self.direction = 2
+        elif event.key == pygame.K_LEFT:
+            self.pac.rect.x -= 2
+            self.direction = 3
+
+    def return_direction(self):
+        return self.direction
+
+    def update(self):
+        self.all_sprites.update()
+        self.all_sprites.draw(screen)
+
+
+
 start_screen()
+FPS = 60
+clock = pygame.time.Clock()
 running = True
 screen.fill((0, 0, 0))
-all_sprites = pygame.sprite.Group()
-pac = pygame.sprite.Sprite(all_sprites)
-pac.image = convert(load_image('pacman.png', -1), 20, 20)
-pac.rect = pac.image.get_rect()
-pac.rect.x = 200
-pac.rect.y = 300
-all_sprites.update()
-all_sprites.draw(screen)
 print(1)
+pacman = Pacman(50, 50)
 while running:
+    clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            screen.fill((0, 0, 0))
+            pacman.move(event)
+        pacman.update()
     pygame.display.flip()
